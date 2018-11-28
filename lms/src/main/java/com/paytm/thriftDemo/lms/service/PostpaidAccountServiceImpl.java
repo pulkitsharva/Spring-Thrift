@@ -10,6 +10,7 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.THttpClient;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
@@ -17,23 +18,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+
 public class PostpaidAccountServiceImpl implements PostpaidAccountService {
 
   @Override
   public PostpaidAccountDTO getAccountByAccountNumber(PostpaidAccountRequestDTO account)
       throws AccountDoesNotExistException {
+
     TTransport transport;
     try {
-      transport = new TFramedTransport(new TSocket("localhost", 7911));
+      String url ="http://localhost:9090/postpaid/account";
+      transport = new THttpClient(url);
+
       TProtocol protocol = new TBinaryProtocol(transport);
 
       PostpaidAccountThriftService.Client client = new PostpaidAccountThriftService.Client(protocol);
-      transport.open();
-
       PostpaidAccountBO postpaidAccount = client.getAccount(account);
       log.error("Got account data from Postpaid: {}", postpaidAccount);
-
-      transport.close();
       PostpaidAccountDTO postpaidAccountDTO = new PostpaidAccountDTO();
       postpaidAccountDTO.setCustomerId(postpaidAccount.getCustomerId());
       postpaidAccountDTO.setFirstName(postpaidAccount.getFirstName());
