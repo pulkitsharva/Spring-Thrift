@@ -3,7 +3,7 @@ Spring Boot + Thrift integration.
 
 <h1>Build</h1>
   
-To build the app go to thriftDemo and run this <br>
+To build the app run this <br>
   `mvn clean install`
 
 <br> To run lms project run this<br>
